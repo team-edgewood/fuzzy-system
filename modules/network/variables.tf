@@ -1,0 +1,1 @@
+variable "second_octet" {}

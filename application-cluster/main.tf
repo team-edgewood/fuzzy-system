@@ -12,7 +12,7 @@ module "ecs" {
   service_name = "hello-world"
   desired_count = "3"
   memory = "2048"
-  subnets = "${module.networking.private_subnets}"
+  subnets = "${module.networking.nat_subnets}"
   cluster_arn = "${aws_ecs_cluster.cluster.arn}"
   cpu = "1024"
 }

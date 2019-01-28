@@ -1,7 +1,3 @@
-resource "aws_ecr_repository" "repo" {
-  name = "${var.service_name}"
-}
-
 resource "aws_ecs_service" "service" {
   name                = "${var.service_name}"
   cluster             = "${var.cluster_arn}"

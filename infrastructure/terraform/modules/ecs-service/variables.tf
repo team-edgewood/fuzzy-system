@@ -11,3 +11,4 @@ variable "cpu" {
 }
 variable "memory" {
 }
+variable "target_group_arn" {}

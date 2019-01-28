@@ -11,4 +11,8 @@ variable "cpu" {
 }
 variable "memory" {
 }
-variable "target_group_arn" {}
+variable "vpc_id" {
+}
+variable "public_lb" {
+  default = false
+}

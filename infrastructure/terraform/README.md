@@ -2,13 +2,13 @@ Supposing a file `env.sh` exists with the following
 
 ```
 export TF_STATE_BUCKET=<your s3 bucket for s3 state>
-export TF_STATE_REGION=<the region of your bucket> 
+export REGION=<the region of your bucket> 
 ```
 
 
 Run
 
-`source env.sh`
+`source ../../env.sh`
 
 to set the variables required for other scripts
 

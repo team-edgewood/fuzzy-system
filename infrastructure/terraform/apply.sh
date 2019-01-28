@@ -15,9 +15,9 @@ component="$1"
 env="$2"
 
 bucket=${TF_STATE_BUCKET}
-region=${TF_STATE_REGION}
+region=${REGION}
 
-cd $(dirname $0)/${component} || exit 1
+cd $(dirname $0)/components/${component} || exit 1
 
 [ -f "$env.vars" ] || {
   echo "No file $(dirname $0)/${component}/${env}.vars"

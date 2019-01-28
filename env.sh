@@ -1,0 +1,3 @@
+export AWS_ACCOUNT='129575384978'
+export REGION='eu-west-1'
+export TF_STATE_BUCKET='129575384978-tf-state'

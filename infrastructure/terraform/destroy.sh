@@ -15,7 +15,7 @@ component="$1"
 env="$2"
 
 bucket=${TF_STATE_BUCKET}
-region=${TF_STATE_REGION}
+region=${REGION}
 
 cd $(dirname $0)/${component} || exit 1
 

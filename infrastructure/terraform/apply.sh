@@ -14,20 +14,17 @@ fi
 component="$1"
 env="$2"
 
-bucket=${TF_STATE_BUCKET}
-region=${REGION}
-
 cd $(dirname $0)/components/${component} || exit 1
 
 [ -f "$env.vars" ] || {
-  echo "No file $(dirname $0)/${component}/${env}.vars"
+  echo "No file $(dirname $0)/components/${component}/${env}.vars"
   exit 1
 }
 
 terraform init \
-  -backend-config="bucket=${bucket}" \
+  -backend-config="bucket=${TF_STATE_BUCKET}" \
   -backend-config="key=${component}-${env}.tfstate" \
-  -backend-config="region=${region}" \
+  -backend-config="region=${REGION}" \
   -reconfigure
 terraform get
 terraform apply -var-file="${env}.vars"

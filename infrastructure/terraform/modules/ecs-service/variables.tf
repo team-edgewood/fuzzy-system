@@ -3,6 +3,9 @@ variable "service_name" {
 variable "subnets" {
   type = "list"
 }
+variable "public_subnets" {
+  type = "list"
+}
 variable "cluster_arn" {
 }
 variable "desired_count" {

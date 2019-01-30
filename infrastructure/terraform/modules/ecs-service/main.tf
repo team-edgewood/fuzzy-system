@@ -8,7 +8,7 @@ resource "aws_ecs_service" "service" {
 
   network_configuration {
     subnets = ["${var.subnets}"]
-    security_groups = []
+    security_groups = ["${aws_security_group.service_sg.id}"]
     assign_public_ip = true
   }
 
@@ -93,7 +93,7 @@ resource "aws_lb" "lb" {
   internal           = "${!var.public_lb}"
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.lb_sg.id}"]
-  subnets            = ["${var.subnets}"]
+  subnets            = ["${var.public_subnets}"]
 
   enable_deletion_protection = false
 }
@@ -129,6 +129,15 @@ resource "aws_security_group_rule" "service_in" {
   to_port         = 80
   protocol        = "tcp"
   source_security_group_id = "${aws_security_group.lb_sg.id}"
+  security_group_id = "${aws_security_group.service_sg.id}"
+}
+
+resource "aws_security_group_rule" "ecr" {
+  type            = "egress"
+  from_port       = 443
+  to_port         = 443
+  protocol        = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.service_sg.id}"
 }
 

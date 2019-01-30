@@ -16,7 +16,7 @@ resource "aws_eip" "gw" {
 
 resource "aws_nat_gateway" "gw" {
   count         = "${length(data.aws_availability_zones.available.names)}"
-  subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
+  subnet_id     = "${element(aws_subnet.nat.*.id, count.index)}"
   allocation_id = "${element(aws_eip.gw.*.id, count.index)}"
   depends_on = ["aws_internet_gateway.gw"]
 }
@@ -54,6 +54,7 @@ resource "aws_subnet" "public" {
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
   vpc_id     = "${aws_vpc.main.id}"
   cidr_block = "10.${var.second_octet}.${length(data.aws_availability_zones.available.names) + count.index}.0/24"
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "public"

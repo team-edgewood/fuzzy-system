@@ -7,6 +7,3 @@ output "public_subnets" {
 output "private_subnets" {
   value = "${aws_subnet.private.*.id}"
 }
-output "nat_subnets" {
-  value = "${aws_subnet.nat.*.id}"
-}

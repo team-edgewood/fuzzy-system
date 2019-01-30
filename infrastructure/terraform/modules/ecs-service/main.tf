@@ -7,9 +7,8 @@ resource "aws_ecs_service" "service" {
   desired_count = "${var.desired_count}"
 
   network_configuration {
-    subnets = ["${var.subnets}"]
+    subnets = ["${var.private_subnets}"]
     security_groups = ["${aws_security_group.service_sg.id}"]
-    assign_public_ip = true
   }
 
   load_balancer {

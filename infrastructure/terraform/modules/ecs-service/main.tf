@@ -13,8 +13,8 @@ resource "aws_ecs_service" "service" {
 
   load_balancer {
     target_group_arn = "${aws_lb_target_group.tg.arn}"
-    container_name   = "hello-world"
-    container_port   = 80
+    container_name   = "${var.container_name}"
+    container_port   = "80"
   }
 
   depends_on = ["aws_lb_listener.lb"]
@@ -22,7 +22,7 @@ resource "aws_ecs_service" "service" {
 
 resource "aws_security_group" "service_sg" {
   name        = "${var.service_name}-sg"
-  description = "Service sg"
+  description = "${var.service_name} sg"
   vpc_id      = "${var.vpc_id}"
 }
 
@@ -33,11 +33,11 @@ resource "aws_ecs_task_definition" "task_definition" {
   cpu                      = "${var.cpu}"
   memory                   = "${var.memory}"
   network_mode = "awsvpc"
-  execution_role_arn = "${aws_iam_role.ecr_role.arn}"
+  execution_role_arn = "${aws_iam_role.ecs_role.arn}"
 }
 
-resource "aws_iam_policy" "ecr_policy" {
-  name = "ecr_policy"
+resource "aws_iam_policy" "ecs_policy" {
+  name = "ecs_policy"
 
   policy = <<EOF
 {
@@ -58,8 +58,8 @@ resource "aws_iam_policy" "ecr_policy" {
 EOF
 }
 
-resource "aws_iam_role" "ecr_role" {
-  name = "ecr_role"
+resource "aws_iam_role" "ecs_role" {
+  name = "ecs_role"
 
   assume_role_policy = <<EOF
 {
@@ -80,12 +80,10 @@ resource "aws_iam_role" "ecr_role" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "test-attach" {
-  role       = "${aws_iam_role.ecr_role.name}"
-  policy_arn = "${aws_iam_policy.ecr_policy.arn}"
+resource "aws_iam_role_policy_attachment" "ecs_role_policy_attachment" {
+  role       = "${aws_iam_role.ecs_role.name}"
+  policy_arn = "${aws_iam_policy.ecs_policy.arn}"
 }
-
-
 
 resource "aws_lb" "lb" {
   name               = "${var.service_name}-lb"
@@ -99,7 +97,7 @@ resource "aws_lb" "lb" {
 
 resource "aws_lb_target_group" "tg" {
   name        = "${var.service_name}-tg"
-  port        = 80
+  port        = "80"
   protocol    = "HTTP"
   vpc_id      = "${var.vpc_id}"
   target_type = "ip"
@@ -119,12 +117,12 @@ resource "aws_lb_listener" "lb" {
 
 resource "aws_security_group" "lb_sg" {
   name        = "${var.service_name}-lb-sg"
-  description = "Load balancer sg"
+  description = "${var.service_name} load balancer sg"
   vpc_id      = "${var.vpc_id}"
 }
 
-resource "aws_security_group_rule" "internet_in" {
-//  count           = "${var.public_lb == true ? 1 : 0}"
+resource "aws_security_group_rule" "load_balancer_from_internet" {
+  count           = "${var.public_lb == "true" ? 1 : 0}"
   type            = "ingress"
   from_port       = 80
   to_port         = 80
@@ -133,7 +131,7 @@ resource "aws_security_group_rule" "internet_in" {
   security_group_id = "${aws_security_group.lb_sg.id}"
 }
 
-resource "aws_security_group_rule" "service_out" {
+resource "aws_security_group_rule" "load_balancer_to_service" {
   type            = "egress"
   from_port       = 80
   to_port         = 80
@@ -142,7 +140,7 @@ resource "aws_security_group_rule" "service_out" {
   source_security_group_id = "${aws_security_group.service_sg.id}"
 }
 
-resource "aws_security_group_rule" "service_in" {
+resource "aws_security_group_rule" "service_from_load_balancer" {
   type            = "ingress"
   from_port       = 80
   to_port         = 80
@@ -151,7 +149,7 @@ resource "aws_security_group_rule" "service_in" {
   security_group_id = "${aws_security_group.service_sg.id}"
 }
 
-resource "aws_security_group_rule" "ecr" {
+resource "aws_security_group_rule" "service_to_nat" {
   type            = "egress"
   from_port       = 443
   to_port         = 443

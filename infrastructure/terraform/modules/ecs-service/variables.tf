@@ -17,5 +17,5 @@ variable "memory" {
 variable "vpc_id" {
 }
 variable "public_lb" {
-  default = false
 }
+variable "container_name" {}

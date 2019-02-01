@@ -28,7 +28,7 @@ resource "aws_security_group" "service_sg" {
 
 resource "aws_ecs_task_definition" "task_definition" {
   family                = "${var.service_name}"
-  container_definitions = "${file("hello-world-task.json")}"
+  container_definitions = "${var.container_definitions}"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "${var.cpu}"
   memory                   = "${var.memory}"

@@ -18,4 +18,7 @@ variable "vpc_id" {
 }
 variable "public_lb" {
 }
-variable "container_name" {}
+variable "container_name" {
+}
+variable "container_definitions" {
+}

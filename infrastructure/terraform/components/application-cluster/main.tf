@@ -18,4 +18,5 @@ module "ecs" {
   cpu = "256"
   memory = "512"
   public_lb = "true"
+  container_definitions = "${file("hello-world-task.json")}"
 }

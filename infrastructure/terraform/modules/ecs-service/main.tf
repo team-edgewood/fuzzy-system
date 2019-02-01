@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 }
 
 resource "aws_iam_policy" "ecs_policy" {
-  name = "ecs_policy"
+  name = "${var.service_name}_ecs_policy"
 
   policy = <<EOF
 {
@@ -59,7 +59,7 @@ EOF
 }
 
 resource "aws_iam_role" "ecs_role" {
-  name = "ecs_role"
+  name = "${var.service_name}_ecs_role"
 
   assume_role_policy = <<EOF
 {

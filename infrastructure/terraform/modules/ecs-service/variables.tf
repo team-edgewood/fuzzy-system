@@ -22,3 +22,5 @@ variable "container_name" {
 }
 variable "container_definitions" {
 }
+variable "ecs_role_arn" {
+}

@@ -33,56 +33,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   cpu                      = "${var.cpu}"
   memory                   = "${var.memory}"
   network_mode = "awsvpc"
-  execution_role_arn = "${aws_iam_role.ecs_role.arn}"
-}
-
-resource "aws_iam_policy" "ecs_policy" {
-  name = "${var.service_name}_ecs_policy"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-    {
-        "Effect": "Allow",
-        "Action": [
-            "ecr:GetAuthorizationToken",
-            "ecr:BatchCheckLayerAvailability",
-            "ecr:GetDownloadUrlForLayer",
-            "ecr:BatchGetImage"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
-}
-
-resource "aws_iam_role" "ecs_role" {
-  name = "${var.service_name}_ecs_role"
-
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-            "Service": [
-                "ecs-tasks.amazonaws.com"
-            ]
-            },
-            "Effect": "Allow",
-            "Sid": ""
-        }
-    ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_role_policy_attachment" {
-  role       = "${aws_iam_role.ecs_role.name}"
-  policy_arn = "${aws_iam_policy.ecs_policy.arn}"
+  execution_role_arn = "${var.ecs_role_arn}"
 }
 
 resource "aws_lb" "lb" {

@@ -24,3 +24,5 @@ variable "container_definitions" {
 }
 variable "ecs_role_arn" {
 }
+variable "nat_sg" {
+}

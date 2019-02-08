@@ -15,6 +15,7 @@ module "hello-world-service" {
   cluster_arn = "${module.application-ecs-cluster.cluster_arn}"
   ecs_role_arn = "${module.application-ecs-cluster.ecs_role_arn}"
   vpc_id = "${module.networking.vpc_id}"
+  nat_sg = "${module.networking.nat_sg}"
   service_name = "hello-world"
   container_name = "hello-world"
   desired_count = "3"

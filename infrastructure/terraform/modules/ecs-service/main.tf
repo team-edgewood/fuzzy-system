@@ -108,3 +108,15 @@ resource "aws_security_group_rule" "service_to_nat" {
   source_security_group_id = "${var.nat_sg}"
   security_group_id = "${aws_security_group.service_sg.id}"
 }
+
+resource "aws_route53_record" "lb_dns" {
+  name = "${var.dns_record}"
+  zone_id = "${var.dns_zone_id}"
+  type    = "A"
+
+  alias {
+    name                   = "${aws_lb.lb.dns_name}"
+    zone_id                = "${aws_lb.lb.zone_id}"
+    evaluate_target_health = true
+  }
+}

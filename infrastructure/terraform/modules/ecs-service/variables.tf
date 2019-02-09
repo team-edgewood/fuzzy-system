@@ -26,3 +26,7 @@ variable "ecs_role_arn" {
 }
 variable "nat_sg" {
 }
+variable "dns_zone_id" {
+}
+variable "dns_record" {
+}

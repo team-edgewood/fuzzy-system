@@ -10,3 +10,15 @@ output "private_subnets" {
 output "nat_sg" {
   value = "${aws_security_group.nat_sg.id}"
 }
+output "public_dns_zone_id" {
+  value = "${aws_route53_zone.public.id}"
+}
+output "public_dns_zone_name" {
+  value = "${aws_route53_zone.public.name}"
+}
+output "internal_dns_zone_id" {
+  value = "${aws_route53_zone.internal.id}"
+}
+output "internal_dns_zone_name" {
+  value = "${aws_route53_zone.internal.name}"
+}

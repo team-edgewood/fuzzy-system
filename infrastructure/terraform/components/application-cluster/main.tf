@@ -1,6 +1,9 @@
 module "networking" {
   source = "../../modules/network"
-  second_octet = "0"
+  second_octet = "${var.second_octet}"
+  domain = "${var.domain}"
+  subdomain = "${var.subdomain}"
+  root_domain_zone_id = "${var.root_domain_zone_id}"
 }
 
 module "application-ecs-cluster" {
@@ -16,6 +19,8 @@ module "hello-world-service" {
   ecs_role_arn = "${module.application-ecs-cluster.ecs_role_arn}"
   vpc_id = "${module.networking.vpc_id}"
   nat_sg = "${module.networking.nat_sg}"
+  dns_zone_id = "${module.networking.public_dns_zone_id}"
+  dns_record = "${module.networking.public_dns_zone_name}"
   service_name = "hello-world"
   container_name = "hello-world"
   desired_count = "3"

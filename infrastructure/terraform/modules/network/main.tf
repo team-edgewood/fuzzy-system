@@ -102,5 +102,29 @@ resource "aws_instance" "nat" {
   tags = {
     Name = "Nat ${count.index}"
   }
+}
 
+resource "aws_route53_zone" "public" {
+  name = "${var.subdomain}.${var.domain}"
+}
+
+resource "aws_route53_record" "public-ns" {
+  zone_id = "${var.root_domain_zone_id}"
+  name    = "${var.subdomain}.${var.domain}"
+  type    = "NS"
+  ttl     = "30"
+
+  records = [
+    "${aws_route53_zone.public.name_servers.0}",
+    "${aws_route53_zone.public.name_servers.1}",
+    "${aws_route53_zone.public.name_servers.2}",
+    "${aws_route53_zone.public.name_servers.3}",
+  ]
+}
+
+resource "aws_route53_zone" "internal" {
+  name = "internal.${var.subdomain}.${var.domain}"
+  vpc {
+    vpc_id = "${aws_vpc.main.id}"
+  }
 }

@@ -110,7 +110,7 @@ resource "aws_security_group_rule" "service_to_nat" {
   from_port       = 443
   to_port         = 443
   protocol        = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  source_security_group_id = "${var.nat_sg}"
   security_group_id = "${aws_security_group.service_sg.id}"
 }
 

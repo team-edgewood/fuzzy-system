@@ -18,6 +18,7 @@ module "hello-world-service" {
   cluster_arn = "${module.application-ecs-cluster.cluster_arn}"
   ecs_role_arn = "${module.application-ecs-cluster.ecs_role_arn}"
   vpc_id = "${module.networking.vpc_id}"
+  nat_sg = "${module.networking.nat_sg}"
   dns_zone_id = "${module.networking.public_dns_zone_id}"
   dns_record = "${module.networking.public_dns_zone_name}"
   service_name = "hello-world"

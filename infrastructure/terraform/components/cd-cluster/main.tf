@@ -11,21 +11,22 @@ module "application-ecs-cluster" {
   cluster_name = "${var.cluster_name}"
 }
 
-module "ci-service" {
+module "cd-service" {
   source = "../../modules/ecs-service"
   private_subnets = "${module.networking.private_subnets}"
   public_subnets = "${module.networking.public_subnets}"
   cluster_arn = "${module.application-ecs-cluster.cluster_arn}"
   ecs_role_arn = "${module.application-ecs-cluster.ecs_role_arn}"
   vpc_id = "${module.networking.vpc_id}"
-  nat_sg = "${module.networking.nat_sg}"
   dns_zone_id = "${module.networking.public_dns_zone_id}"
   dns_record = "${module.networking.public_dns_zone_name}"
-  service_name = "ci"
-  container_name = "ci"
+  service_name = "cd"
+  container_name = "cd"
+  container_port = "8080"
+  health_check_path = "/login"
   desired_count = "1"
   cpu = "256"
   memory = "512"
   public_lb = "true"
-  container_definitions = "${file("ci.json")}"
+  container_definitions = "${file("cd.json")}"
 }

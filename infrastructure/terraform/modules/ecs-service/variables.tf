@@ -28,3 +28,7 @@ variable "dns_zone_id" {
 }
 variable "dns_record" {
 }
+variable "container_port" {
+}
+variable "health_check_path" {
+}

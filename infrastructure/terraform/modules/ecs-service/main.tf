@@ -14,7 +14,7 @@ resource "aws_ecs_service" "service" {
   load_balancer {
     target_group_arn = "${aws_lb_target_group.tg.arn}"
     container_name   = "${var.container_name}"
-    container_port   = "80"
+    container_port   = "${var.container_port}"
   }
 
   depends_on = ["aws_lb_listener.lb"]
@@ -48,10 +48,15 @@ resource "aws_lb" "lb" {
 
 resource "aws_lb_target_group" "tg" {
   name        = "${var.service_name}-tg"
-  port        = "80"
+  port        = "${var.container_port}"
   protocol    = "HTTP"
   vpc_id      = "${var.vpc_id}"
   target_type = "ip"
+
+  health_check {
+    matcher = "200"
+    path = "${var.health_check_path}"
+  }
 }
 
 # Redirect all traffic from the ALB to the target group
@@ -84,8 +89,8 @@ resource "aws_security_group_rule" "load_balancer_from_internet" {
 
 resource "aws_security_group_rule" "load_balancer_to_service" {
   type            = "egress"
-  from_port       = 80
-  to_port         = 80
+  from_port       = "${var.container_port}"
+  to_port         = "${var.container_port}"
   protocol        = "tcp"
   security_group_id = "${aws_security_group.lb_sg.id}"
   source_security_group_id = "${aws_security_group.service_sg.id}"
@@ -93,8 +98,8 @@ resource "aws_security_group_rule" "load_balancer_to_service" {
 
 resource "aws_security_group_rule" "service_from_load_balancer" {
   type            = "ingress"
-  from_port       = 80
-  to_port         = 80
+  from_port       = "${var.container_port}"
+  to_port         = "${var.container_port}"
   protocol        = "tcp"
   source_security_group_id = "${aws_security_group.lb_sg.id}"
   security_group_id = "${aws_security_group.service_sg.id}"

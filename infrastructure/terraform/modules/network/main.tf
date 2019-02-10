@@ -54,7 +54,7 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_route_table" "private" {
-  count  = "${length(data.aws_availability_zones.available.names)}"
+  count  = "${var.saving_mode == "true" ? 0 : length(data.aws_availability_zones.available.names)}"
   vpc_id = "${aws_vpc.main.id}"
 
   route {
@@ -64,7 +64,7 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route_table_association" "private" {
-  count          = "${length(data.aws_availability_zones.available.names)}"
+  count          = "${var.saving_mode == "true" ? 0 : length(data.aws_availability_zones.available.names)}"
   subnet_id      = "${element(aws_subnet.private.*.id, count.index)}"
   route_table_id = "${element(aws_route_table.private.*.id, count.index)}"
 }
@@ -92,7 +92,7 @@ resource "aws_security_group_rule" "nat_to_internet" {
 }
 
 resource "aws_instance" "nat" {
-  count          = "${length(data.aws_availability_zones.available.names)}"
+  count          = "${var.saving_mode == "true" ? 0 : length(data.aws_availability_zones.available.names)}"
   ami           = "ami-024107e3e3217a248"
   instance_type = "t3.nano"
   subnet_id = "${element(aws_subnet.public.*.id, count.index)}"

@@ -17,7 +17,7 @@ resource "aws_ecs_service" "service" {
     container_port   = "${var.container_port}"
   }
 
-  depends_on = ["aws_lb_listener.lb"]
+  depends_on = ["aws_lb_listener.public_lb", "aws_lb_listener.private_lb"]
 }
 
 resource "aws_security_group" "service_sg" {
@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 
 resource "aws_lb" "lb" {
   name               = "${var.service_name}-lb"
-  internal           = "${!var.public_lb}"
+  internal           = "${var.public_lb == "true" ? false : true}"
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.lb_sg.id}"]
   subnets            = ["${var.public_subnets}"]
@@ -59,11 +59,25 @@ resource "aws_lb_target_group" "tg" {
   }
 }
 
-# Redirect all traffic from the ALB to the target group
-resource "aws_lb_listener" "lb" {
+resource "aws_lb_listener" "private_lb" {
+  count = "${var.public_lb == "true" ? 0 : 1}"
   load_balancer_arn = "${aws_lb.lb.arn}"
   port              = "80"
   protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.tg.id}"
+    type             = "forward"
+  }
+}
+
+resource "aws_lb_listener" "public_lb" {
+  count = "${var.public_lb == "true" ? 1 : 0}"
+  load_balancer_arn = "${aws_lb.lb.arn}"
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "${aws_acm_certificate.cert.arn}"
 
   default_action {
     target_group_arn = "${aws_lb_target_group.tg.id}"
@@ -80,8 +94,8 @@ resource "aws_security_group" "lb_sg" {
 resource "aws_security_group_rule" "load_balancer_from_internet" {
   count           = "${var.public_lb == "true" ? 1 : 0}"
   type            = "ingress"
-  from_port       = 80
-  to_port         = 80
+  from_port       = 443
+  to_port         = 443
   protocol        = "tcp"
   cidr_blocks     = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.lb_sg.id}"
@@ -124,4 +138,31 @@ resource "aws_route53_record" "lb_dns" {
     zone_id                = "${aws_lb.lb.zone_id}"
     evaluate_target_health = true
   }
+}
+
+resource "aws_acm_certificate" "cert" {
+  count           = "${var.public_lb == "true" ? 1 : 0}"
+  domain_name       = "${var.dns_record}"
+  validation_method = "DNS"
+
+  tags = {
+    Environment = "${var.service_name}-cert"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_route53_record" "cert_validation" {
+  name    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_name}"
+  type    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_type}"
+  zone_id = "${var.dns_zone_id}"
+  records = ["${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}"]
+  ttl     = 60
+}
+
+resource "aws_acm_certificate_validation" "cert" {
+  certificate_arn         = "${aws_acm_certificate.cert.arn}"
+  validation_record_fqdns = ["${aws_route53_record.cert_validation.fqdn}"]
 }

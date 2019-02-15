@@ -8,12 +8,6 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.main.id}"
 }
 
-resource "aws_eip" "gw" {
-  count      = "${length(data.aws_availability_zones.available.names)}"
-  vpc        = true
-  depends_on = ["aws_internet_gateway.gw"]
-}
-
 resource "aws_subnet" "public" {
   count         = "${length(data.aws_availability_zones.available.names)}"
   availability_zone = "${data.aws_availability_zones.available.names[count.index]}"

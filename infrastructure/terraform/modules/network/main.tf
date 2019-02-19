@@ -99,10 +99,12 @@ resource "aws_instance" "nat" {
 }
 
 resource "aws_route53_zone" "public" {
+  count = "${var.subdomain != "" ? 1 : 0}"
   name = "${var.subdomain}.${var.domain}"
 }
 
 resource "aws_route53_record" "public-ns" {
+  count = "${var.subdomain != "" ? 1 : 0}"
   zone_id = "${var.root_domain_zone_id}"
   name    = "${var.subdomain}.${var.domain}"
   type    = "NS"
@@ -117,6 +119,7 @@ resource "aws_route53_record" "public-ns" {
 }
 
 resource "aws_route53_zone" "internal" {
+  count = "${var.subdomain != "" ? 1 : 0}"
   name = "internal.${var.subdomain}.${var.domain}"
   vpc {
     vpc_id = "${aws_vpc.main.id}"

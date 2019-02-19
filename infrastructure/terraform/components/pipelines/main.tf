@@ -2,9 +2,6 @@ module "network" {
   source = "../../modules/network"
   second_octet = "${var.second_octet}"
   saving_mode = "${var.saving_mode}"
-  subdomain = "cd"
-  root_domain_zone_id = "Z1QTGG41PYAVAC"
-  domain = "team-edgewood.com"
 }
 
 module "hello_world_build" {

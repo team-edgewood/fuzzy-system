@@ -1,4 +1,4 @@
-resource "aws_iam_role" "build" {
+resource "aws_iam_role" "build_role" {
   name = "build"
 
   assume_role_policy = <<EOF
@@ -17,8 +17,8 @@ resource "aws_iam_role" "build" {
 EOF
 }
 
-resource "aws_iam_role_policy" "standard" {
-  role = "${aws_iam_role.build.name}"
+resource "aws_iam_role_policy" "build_policy" {
+  role = "${aws_iam_role.build_role.name}"
 
   policy = <<POLICY
 {
@@ -47,6 +47,16 @@ resource "aws_iam_role_policy" "standard" {
         "ec2:DescribeVpcs"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.pipeline_bucket.arn}",
+        "${aws_s3_bucket.pipeline_bucket.arn}/*"
+      ]
     },
     {
         "Effect": "Allow",

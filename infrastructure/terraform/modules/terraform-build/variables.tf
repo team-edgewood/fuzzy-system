@@ -6,3 +6,6 @@ variable "subnets" {
   type = "list"
 }
 variable "sg" {}
+variable "target_environment" {}
+variable "state_bucket" {}
+variable "region" {}

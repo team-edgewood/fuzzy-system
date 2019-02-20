@@ -27,4 +27,4 @@ terraform init \
   -backend-config="region=${REGION}" \
   -reconfigure
 terraform get
-terraform apply -var-file="${env}.vars" -var "saving_mode=false"
+terraform apply -var-file="${env}.vars" -var "saving_mode=false" -var "oauthToken=${OAUTH_TOKEN}"

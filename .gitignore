@@ -3,5 +3,5 @@
 **/.gradle
 **/build
 **/out
-token.sh
-env.sh
+**/token.sh
+**/env.sh

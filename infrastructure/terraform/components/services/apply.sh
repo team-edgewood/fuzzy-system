@@ -4,7 +4,7 @@ set -eux
 
 cd $(dirname $0)
 
-cmd="docker run -i -t hashicorp/terraform:light"
+cmd="docker run hashicorp/terraform:light"
 
 [ -f ${TARGET_ENVIRONMENT}.vars ] || exit 1
 

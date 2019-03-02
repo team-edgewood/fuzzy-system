@@ -12,7 +12,7 @@ export GITHUB_REPO=<github repo>
 
 Run
 
-`source ../../env.sh`
+`source env.sh`
 
 to set the variables required for other scripts
 

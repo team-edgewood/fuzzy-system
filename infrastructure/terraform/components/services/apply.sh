@@ -4,7 +4,7 @@ set -eux
 
 cd $(dirname $0)
 
-cmd="docker run hashicorp/terraform:light"
+cmd="docker run --rm -v $(pwd):/tf/components/services -v $(pwd)/../../modules:/tf/modules --workdir=/tf/components/services hashicorp/terraform:light"
 
 [ -f ${TARGET_ENVIRONMENT}.vars ] || exit 1
 
@@ -14,4 +14,4 @@ eval $cmd init \
   -backend-config="region=${REGION}" \
   -reconfigure
 eval $cmd get
-eval $cmd apply -var-file="${TARGET_ENVIRONMENT}.vars" -var "saving_mode=${SAVING_MODE}" $(pwd)
+eval $cmd apply -var-file="${TARGET_ENVIRONMENT}.vars" -var "saving_mode=${SAVING_MODE}"

@@ -1,1 +1,5 @@
-../common_variables.tf
+variable region {
+  type = "string"
+}
+variable "saving_mode" {}
+

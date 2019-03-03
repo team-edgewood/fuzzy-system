@@ -1,7 +1,7 @@
 resource "aws_codebuild_project" "build" {
   name = "${var.build_name}"
   description = "${var.build_name}"
-  build_timeout = "5"
+  build_timeout = "60"
   service_role = "${var.role}"
 
   artifacts {

@@ -4,7 +4,13 @@ set -eux
 
 cd $(dirname $0)
 
-cmd="docker run --rm -v $(pwd):/tf/components/services -v $(pwd)/../../modules:/tf/modules --workdir=/tf/components/services hashicorp/terraform:light"
+which terraform || {
+  wget https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip
+  unzip terraform_0.11.11_linux_amd64.zip
+  mv terraform /usr/local/bin
+}
+
+cmd="terraform"
 
 [ -f ${TARGET_ENVIRONMENT}.vars ] || exit 1
 

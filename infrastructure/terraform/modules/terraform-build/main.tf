@@ -10,7 +10,7 @@ resource "aws_codebuild_project" "build" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image = "aws/codebuild/docker:18.09.0"
+    image = "aws/codebuild/ubuntu-base:14.04"
     type = "LINUX_CONTAINER"
 
     environment_variable {

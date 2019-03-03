@@ -3,7 +3,7 @@ resource "aws_ecr_repository" "repo" {
 }
 
 resource "aws_ecs_service" "service" {
-  name                = "${var.service_name}"
+  name                = "${var.service_name}-${var.environment}"
   cluster             = "${var.cluster_arn}"
   task_definition     = "${aws_ecs_task_definition.task_definition.arn}"
   scheduling_strategy = "REPLICA"
@@ -17,7 +17,7 @@ resource "aws_ecs_service" "service" {
 
   load_balancer {
     target_group_arn = "${aws_lb_target_group.tg.arn}"
-    container_name   = "${var.container_name}"
+    container_name   = "${var.container_name}-${var.environment}"
     container_port   = "${var.container_port}"
   }
 
@@ -31,7 +31,7 @@ resource "aws_security_group" "service_sg" {
 }
 
 resource "aws_ecs_task_definition" "task_definition" {
-  family                = "${var.service_name}"
+  family                = "${var.service_name}-${var.environment}"
   container_definitions = <<EOF
 [
   {

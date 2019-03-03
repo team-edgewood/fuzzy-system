@@ -1,9 +1,9 @@
 resource "aws_ecs_cluster" "cluster" {
-  name = "${var.cluster_name}"
+  name = "${var.cluster_name}-${var.environment}"
 }
 
 resource "aws_iam_policy" "ecs_policy" {
-  name = "ecs_policy_${var.cluster_name}"
+  name = "ecs_policy_${var.cluster_name}_${var.environment}"
 
   policy = <<EOF
 {
@@ -25,7 +25,7 @@ EOF
 }
 
 resource "aws_iam_role" "ecs_role" {
-  name = "ecs_role_${var.cluster_name}"
+  name = "ecs_role_${var.cluster_name}_${var.environment}"
 
   assume_role_policy = <<EOF
 {

@@ -10,6 +10,7 @@ module "networking" {
 module "application-ecs-cluster" {
   source = "../../modules/ecs-cluster"
   cluster_name = "application-cluster"
+  environment = "${var.environment}"
 }
 
 module "hello-world-service" {
@@ -31,4 +32,5 @@ module "hello-world-service" {
   memory = "512"
   public_lb = "true"
   container_definitions = "${file("hello-world-task.json")}"
+  environment = "${var.environment}"
 }

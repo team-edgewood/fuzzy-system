@@ -6,3 +6,4 @@ variable "subdomain" {}
 variable "root_domain_zone_id" {
   default = "Z1QTGG41PYAVAC"
 }
+variable "environment" {}

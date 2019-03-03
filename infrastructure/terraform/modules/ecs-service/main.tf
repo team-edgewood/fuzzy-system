@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "repo" {
-  name = "${var.service_name}"
+  name = "${var.service_name}-${var.environment}"
 }
 
 resource "aws_ecs_service" "service" {
@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 }
 
 resource "aws_lb" "lb" {
-  name               = "${var.service_name}-lb"
+  name               = "${var.service_name}-${var.environment}-lb"
   internal           = "${var.public_lb == "true" ? false : true}"
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.lb_sg.id}"]
@@ -51,7 +51,7 @@ resource "aws_lb" "lb" {
 }
 
 resource "aws_lb_target_group" "tg" {
-  name        = "${var.service_name}-tg"
+  name        = "${var.service_name}-${var.environment}-tg"
   port        = "${var.container_port}"
   protocol    = "HTTP"
   vpc_id      = "${var.vpc_id}"
@@ -90,7 +90,7 @@ resource "aws_lb_listener" "public_lb" {
 }
 
 resource "aws_security_group" "lb_sg" {
-  name        = "${var.service_name}-lb-sg"
+  name        = "${var.service_name}-${var.environment}-lb-sg"
   description = "${var.service_name} load balancer sg"
   vpc_id      = "${var.vpc_id}"
 }
@@ -150,7 +150,7 @@ resource "aws_acm_certificate" "cert" {
   validation_method = "DNS"
 
   tags = {
-    Environment = "${var.service_name}-cert"
+    Environment = "${var.service_name}-${var.environment}-cert"
   }
 
   lifecycle {

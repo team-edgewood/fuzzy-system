@@ -34,3 +34,4 @@ variable "container_port" {
 }
 variable "health_check_path" {
 }
+variable "environment" {}

@@ -31,6 +31,6 @@ module "hello-world-service" {
   cpu = "256"
   memory = "512"
   public_lb = "true"
-  container_definitions = "${file("hello-world-task.json")}"
   environment = "${var.environment}"
+  aws_account = "${var.aws_account}"
 }

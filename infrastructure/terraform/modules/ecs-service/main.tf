@@ -32,7 +32,23 @@ resource "aws_security_group" "service_sg" {
 
 resource "aws_ecs_task_definition" "task_definition" {
   family                = "${var.service_name}"
-  container_definitions = "${var.container_definitions}"
+  container_definitions = <<EOF
+[
+  {
+    "name": "${var.service_name}-${var.environment}",
+    "image": "${var.aws_account}.dkr.ecr.eu-west-1.amazonaws.com/${var.service_name}-${var.environment}:latest",
+    "cpu": ${var.cpu < 1024 ? 1 : var.cpu / 1024},
+    "memory": ${var.memory},
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ]
+  }
+]
+EOF
   requires_compatibilities = ["FARGATE"]
   cpu                      = "${var.cpu}"
   memory                   = "${var.memory}"

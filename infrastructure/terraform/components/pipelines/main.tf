@@ -4,15 +4,28 @@ module "network" {
   saving_mode = "${var.saving_mode}"
 }
 
-module "services_terraform_build_dev" {
+module "services_terraform_build_test" {
   source = "../../modules/terraform-build"
   sg = "${aws_security_group.code_build.id}"
-  build_name = "services-dev"
+  build_name = "services-terraform-test"
   buildspec = "infrastructure/terraform/components/services/buildspec.yml"
   vpc_id = "${module.network.vpc_id}"
   subnets = ["${module.network.private_subnets}"]
   role = "${aws_iam_role.build_role.id}"
-  target_environment = "dev"
+  target_environment = "test"
+  state_bucket = "${var.state_bucket}"
+  region = "${var.region}"
+}
+
+module "services_terraform_build_prod" {
+  source = "../../modules/terraform-build"
+  sg = "${aws_security_group.code_build.id}"
+  build_name = "services-terraform-prod"
+  buildspec = "infrastructure/terraform/components/services/buildspec.yml"
+  vpc_id = "${module.network.vpc_id}"
+  subnets = ["${module.network.private_subnets}"]
+  role = "${aws_iam_role.build_role.id}"
+  target_environment = "prod"
   state_bucket = "${var.state_bucket}"
   region = "${var.region}"
 }
@@ -22,8 +35,8 @@ resource "aws_s3_bucket" "pipeline_bucket" {
   acl    = "private"
 }
 
-resource "aws_codepipeline" "test" {
-  name     = "tf-test-pipeline"
+resource "aws_codepipeline" "services" {
+  name     = "services-pipeline"
   role_arn = "${aws_iam_role.pipeline_role.arn}"
 
   artifact_store {
@@ -32,10 +45,10 @@ resource "aws_codepipeline" "test" {
   }
 
   stage {
-    name = "Source"
+    name = "source-code"
 
     action {
-      name             = "Source"
+      name             = "source-code"
       category         = "Source"
       owner            = "ThirdParty"
       provider         = "GitHub"
@@ -52,18 +65,37 @@ resource "aws_codepipeline" "test" {
   }
 
   stage {
-    name = "Build"
+    name = "test"
 
     action {
-      name            = "Build"
+      name            = "terraform-test"
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
       input_artifacts = ["sourcecode"]
       version         = "1"
+      run_order       = "1"
 
       configuration = {
-        ProjectName = "${module.services_terraform_build_dev.build_name}"
+        ProjectName = "${module.services_terraform_build_test.build_name}"
+      }
+    }
+  }
+
+  stage {
+    name = "prod"
+
+    action {
+      name            = "terraform-prod"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["sourcecode"]
+      version         = "1"
+      run_order       = "1"
+
+      configuration = {
+        ProjectName = "${module.services_terraform_build_prod.build_name}"
       }
     }
   }

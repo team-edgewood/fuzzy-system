@@ -15,6 +15,7 @@ module "services_terraform_build_test" {
   target_environment = "test"
   state_bucket = "${var.state_bucket}"
   region = "${var.region}"
+  aws_account = "${var.aws_account}"
 }
 
 module "services_terraform_build_prod" {
@@ -28,6 +29,7 @@ module "services_terraform_build_prod" {
   target_environment = "prod"
   state_bucket = "${var.state_bucket}"
   region = "${var.region}"
+  aws_account = "${var.aws_account}"
 }
 
 resource "aws_s3_bucket" "pipeline_bucket" {

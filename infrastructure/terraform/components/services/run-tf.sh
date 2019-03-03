@@ -22,4 +22,4 @@ eval $cmd init \
 eval $cmd get
 eval "$cmd ${1:-'apply'} -auto-approve -var-file=${TARGET_ENVIRONMENT}.vars \
   -var saving_mode=${SAVING_MODE:-'false'} \
-  -var aws_account=${AWS_ACCOUNT:-'false'}"
+  -var aws_account=${AWS_ACCOUNT}"

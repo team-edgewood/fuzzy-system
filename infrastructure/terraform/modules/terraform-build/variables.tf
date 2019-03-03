@@ -9,3 +9,4 @@ variable "sg" {}
 variable "target_environment" {}
 variable "state_bucket" {}
 variable "region" {}
+variable "aws_account" {}

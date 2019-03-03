@@ -25,6 +25,10 @@ resource "aws_codebuild_project" "build" {
       "name"  = "REGION"
       "value" = "${var.region}"
     }
+    environment_variable {
+      "name"  = "AWS_ACCOUNT"
+      "value" = "${var.aws_account}"
+    }
 
   }
 

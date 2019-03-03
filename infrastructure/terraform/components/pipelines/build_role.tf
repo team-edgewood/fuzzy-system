@@ -26,27 +26,21 @@ resource "aws_iam_role_policy" "build_policy" {
   "Statement": [
     {
       "Effect": "Allow",
-      "Resource": [
-        "*"
-      ],
       "Action": [
+        "ec2:*",
+        "route53:*",
+        "iam:*",
+        "ecr:*",
+        "ecs:*",
+        "elasticloadbalancing:*",
+        "acm:*",
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:CreateNetworkInterface",
-        "ec2:DescribeDhcpOptions",
-        "ec2:DescribeNetworkInterfaces",
-        "ec2:DeleteNetworkInterface",
-        "ec2:DescribeSubnets",
-        "ec2:DescribeSecurityGroups",
-        "ec2:DescribeVpcs"
       ],
-      "Resource": "*"
+      "Resource": [
+        "*"
+      ]
     },
     {
       "Effect": "Allow",
@@ -59,13 +53,6 @@ resource "aws_iam_role_policy" "build_policy" {
         "arn:aws:s3:::${var.state_bucket}",
         "arn:aws:s3:::${var.state_bucket}/*"
       ]
-    },
-    {
-        "Effect": "Allow",
-        "Action": [
-            "ec2:CreateNetworkInterfacePermission"
-        ],
-        "Resource": "*"
     }
   ]
 }

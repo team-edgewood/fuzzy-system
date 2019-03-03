@@ -4,6 +4,12 @@ set -eux
 
 cd $(dirname $0)
 
+which terraform || {
+  wget https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip
+  unzip terraform_0.11.11_linux_amd64.zip
+  mv terraform /usr/local/bin
+}
+
 cmd="terraform"
 
 eval $cmd init \
@@ -12,11 +18,10 @@ eval $cmd init \
   -backend-config="region=${REGION}" \
   -reconfigure
 eval $cmd get
-eval $cmd apply -var-file="terraform.vars" \
+eval $cmd apply -auto-approve -var-file="terraform.vars" \
   -var "saving_mode=${SAVING_MODE:-'false'}" \
   -var "oauth_token=${OAUTH_TOKEN}" \
   -var "state_bucket=${TF_STATE_BUCKET}" \
   -var "aws_account=${AWS_ACCOUNT}" \
   -var "github_owner=${GITHUB_OWNER}" \
-  -var "github_repo=${GITHUB_REPO}" \
-  $(pwd)
+  -var "github_repo=${GITHUB_REPO}"

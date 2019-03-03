@@ -20,4 +20,4 @@ eval $cmd init \
   -backend-config="region=${REGION}" \
   -reconfigure
 eval $cmd get
-eval $cmd apply -auto-approve -var-file="${TARGET_ENVIRONMENT}.vars" -var "saving_mode=${SAVING_MODE:-'false'}"
+eval "$cmd ${1:-'apply'} -auto-approve -var-file=${TARGET_ENVIRONMENT}.vars -var saving_mode=${SAVING_MODE:-'false'}"

@@ -3,5 +3,5 @@ version: 0.2
 phases:
   build:
     commands:
-    - chmod a+x ./infrastructure/terraform/components/services/apply.sh
-    - ./infrastructure/terraform/components/services/apply.sh
+    - chmod a+x ./infrastructure/terraform/components/services/run-tf.sh
+    - ./infrastructure/terraform/components/services/run-tf.sh

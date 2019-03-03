@@ -4,7 +4,6 @@ set -eux
 
 cd $(dirname $0)
 
-#cmd="docker run -i -t hashicorp/terraform:light"
 cmd="terraform"
 
 eval $cmd init \

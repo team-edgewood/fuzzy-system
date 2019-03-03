@@ -55,7 +55,9 @@ resource "aws_iam_role_policy" "build_policy" {
       ],
       "Resource": [
         "${aws_s3_bucket.pipeline_bucket.arn}",
-        "${aws_s3_bucket.pipeline_bucket.arn}/*"
+        "${aws_s3_bucket.pipeline_bucket.arn}/*",
+        "arn:aws:s3:::${var.state_bucket}",
+        "arn:aws:s3:::${var.state_bucket}/*"
       ]
     },
     {

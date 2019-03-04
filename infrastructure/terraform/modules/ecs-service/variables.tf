@@ -20,3 +20,4 @@ variable "container_port" {}
 variable "health_check_path" {}
 variable "environment" {}
 variable "aws_account" {}
+variable "image_tag" {}

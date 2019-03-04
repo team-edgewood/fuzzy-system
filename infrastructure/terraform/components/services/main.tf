@@ -33,4 +33,5 @@ module "hello-world-service" {
   public_lb = "true"
   environment = "${var.environment}"
   aws_account = "${var.aws_account}"
+  image_tag = "latest"
 }

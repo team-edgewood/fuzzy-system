@@ -1,7 +1,3 @@
-resource "aws_ecr_repository" "repo" {
-  name = "${var.service_name}-${var.environment}"
-}
-
 resource "aws_ecs_service" "service" {
   name                = "${var.service_name}-${var.environment}"
   cluster             = "${var.cluster_arn}"
@@ -36,7 +32,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 [
   {
     "name": "${var.service_name}-${var.environment}",
-    "image": "${var.aws_account}.dkr.ecr.eu-west-1.amazonaws.com/${var.service_name}-${var.environment}:latest",
+    "image": "${var.aws_account}.dkr.ecr.eu-west-1.amazonaws.com/${var.service_name}:${var.image_tag}",
     "cpu": ${var.cpu < 1024 ? 1 : var.cpu / 1024},
     "memory": ${var.memory},
     "essential": true,

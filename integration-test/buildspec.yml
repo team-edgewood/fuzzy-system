@@ -1,0 +1,7 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+    - chmod a+x ./integration-test/test.sh
+    - ./integration-test/test.sh

@@ -8,3 +8,10 @@ variable "root_domain_zone_id" {
 }
 variable "environment" {}
 variable "aws_account" {}
+variable region {
+  type = "string"
+}
+variable "saving_mode" {
+  default = "false"
+}
+

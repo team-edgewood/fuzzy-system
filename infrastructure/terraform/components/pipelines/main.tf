@@ -45,6 +45,18 @@ module "integration_test" {
   aws_account = "${var.aws_account}"
 }
 
+module "hello_world_build" {
+  source = "../../modules/service-build"
+  sg = "${aws_security_group.code_build.id}"
+  build_name = "hello_world_build"
+  buildspec = "services/hello-world/buildspec.yml"
+  vpc_id = "${module.network.vpc_id}"
+  subnets = ["${module.network.private_subnets}"]
+  role = "${aws_iam_role.build_role.id}"
+  region = "${var.region}"
+  aws_account = "${var.aws_account}"
+}
+
 module "services_terraform_build_prod" {
   source = "../../modules/terraform-build"
   sg = "${aws_security_group.code_build.id}"
@@ -115,14 +127,29 @@ resource "aws_codepipeline" "services" {
   stage {
     name = "test"
 
+
     action {
-      name            = "services"
+      name            = "hello-world-build"
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
       input_artifacts = ["sourcecode"]
       version         = "1"
       run_order       = "1"
+
+      configuration = {
+        ProjectName = "${module.hello_world_build.build_name}"
+      }
+    }
+
+    action {
+      name            = "services-terraform"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["sourcecode"]
+      version         = "1"
+      run_order       = "2"
 
       configuration = {
         ProjectName = "${module.services_terraform_build_test.build_name}"
@@ -136,7 +163,7 @@ resource "aws_codepipeline" "services" {
       provider        = "CodeBuild"
       input_artifacts = ["sourcecode"]
       version         = "1"
-      run_order       = "2"
+      run_order       = "3"
 
       configuration = {
         ProjectName = "${module.integration_test.build_name}"

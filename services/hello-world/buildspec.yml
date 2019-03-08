@@ -3,4 +3,5 @@ version: 0.2
 phases:
   build:
     commands:
-    - echo "hello world"
+      - chmod a+x ./services/hello-world/build.sh
+      - ./services/hello-world/build.sh

@@ -1,0 +1,7 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+    - chmod a+x ./infrastructure/terraform/components/image-repos/run-tf.sh
+    - ./infrastructure/terraform/components/image-repos/run-tf.sh

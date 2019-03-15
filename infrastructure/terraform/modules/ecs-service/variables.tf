@@ -6,6 +6,7 @@ variable "public_subnets" {
   type = "list"
 }
 variable "cluster_arn" {}
+variable "cluster_name" {}
 variable "desired_count" {}
 variable "cpu" {}
 variable "memory" {}

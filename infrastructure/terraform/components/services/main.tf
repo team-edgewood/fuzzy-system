@@ -1,4 +1,6 @@
 module "networking" {
+  name = "services"
+  environment = "${var.environment}"
   source = "../../modules/network"
   second_octet = "${var.second_octet}"
   domain = "${var.domain}"
@@ -18,6 +20,7 @@ module "hello-world-service" {
   private_subnets = "${module.networking.private_subnets}"
   public_subnets = "${module.networking.public_subnets}"
   cluster_arn = "${module.application-ecs-cluster.cluster_arn}"
+  cluster_name = "${module.application-ecs-cluster.cluster_name}"
   ecs_role_arn = "${module.application-ecs-cluster.ecs_role_arn}"
   vpc_id = "${module.networking.vpc_id}"
   nat_sg = "${module.networking.nat_sg}"

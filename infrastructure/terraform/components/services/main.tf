@@ -37,4 +37,5 @@ module "hello-world-service" {
   environment = "${var.environment}"
   aws_account = "${var.aws_account}"
   image_tag = "${var.source_version}"
+  saving_mode = "${var.saving_mode}"
 }

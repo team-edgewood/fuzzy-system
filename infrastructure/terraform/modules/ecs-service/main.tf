@@ -174,6 +174,7 @@ EOF
 }
 
 resource "aws_lb" "lb" {
+  count = "${var.saving_mode == "true" ? 0 : 1}"
   name               = "${var.service_name}-${var.environment}-lb"
   internal           = "${var.public_lb == "true" ? false : true}"
   load_balancer_type = "application"

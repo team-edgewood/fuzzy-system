@@ -142,6 +142,9 @@ resource "aws_security_group" "service_sg" {
   name        = "${var.service_name}-sg"
   description = "${var.service_name} sg"
   vpc_id      = "${var.vpc_id}"
+  tags {
+    name = "${var.service_name}-${var.environment}"
+  }
 }
 
 resource "aws_ecs_task_definition" "task_definition" {

@@ -1,4 +1,6 @@
 module "networking" {
+  name = "services"
+  environment = "${var.environment}"
   source = "../../modules/network"
   second_octet = "${var.second_octet}"
   domain = "${var.domain}"

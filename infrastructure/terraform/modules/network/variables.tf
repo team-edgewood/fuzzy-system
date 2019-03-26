@@ -1,3 +1,5 @@
+variable "name" {}
+variable "environment" {}
 variable "second_octet" {}
 variable "domain" {
   default = ""

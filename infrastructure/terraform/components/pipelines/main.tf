@@ -1,7 +1,9 @@
 module "network" {
+  name = "pipeline"
   source = "../../modules/network"
   second_octet = "${var.second_octet}"
   saving_mode = "${var.saving_mode}"
+  environment = "prod"
 }
 
 module "image_repos_terraform_build" {
@@ -55,6 +57,32 @@ module "hello_world_build" {
   role = "${aws_iam_role.build_role.id}"
   region = "${var.region}"
   aws_account = "${var.aws_account}"
+}
+
+module "hello_world_deploy_test" {
+  source = "../../modules/service-deploy"
+  sg = "${aws_security_group.code_build.id}"
+  build_name = "hello-world-deploy-test"
+  buildspec = "services/deploy-buildspec.yml"
+  vpc_id = "${module.network.vpc_id}"
+  subnets = ["${module.network.private_subnets}"]
+  role = "${aws_iam_role.build_role.id}"
+  aws_account = "${var.aws_account}"
+  environment = "test"
+  service = "hello-world"
+}
+
+module "hello_world_deploy_prod" {
+  source = "../../modules/service-deploy"
+  sg = "${aws_security_group.code_build.id}"
+  build_name = "hello-world-deploy-prod"
+  buildspec = "services/deploy-buildspec.yml"
+  vpc_id = "${module.network.vpc_id}"
+  subnets = ["${module.network.private_subnets}"]
+  role = "${aws_iam_role.build_role.id}"
+  aws_account = "${var.aws_account}"
+  environment = "prod"
+  service = "hello-world"
 }
 
 module "services_terraform_build_prod" {
@@ -157,13 +185,27 @@ resource "aws_codepipeline" "services" {
     }
 
     action {
-      name            = "integration-test"
+      name            = "hello-world-deploy-test"
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
       input_artifacts = ["sourcecode"]
       version         = "1"
       run_order       = "3"
+
+      configuration = {
+        ProjectName = "${module.hello_world_deploy_test.build_name}"
+      }
+    }
+
+    action {
+      name            = "integration-test"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["sourcecode"]
+      version         = "1"
+      run_order       = "4"
 
       configuration = {
         ProjectName = "${module.integration_test.build_name}"
@@ -185,6 +227,20 @@ resource "aws_codepipeline" "services" {
 
       configuration = {
         ProjectName = "${module.services_terraform_build_prod.build_name}"
+      }
+    }
+
+    action {
+      name            = "hello-world-deploy-prod"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["sourcecode"]
+      version         = "1"
+      run_order       = "2"
+
+      configuration = {
+        ProjectName = "${module.hello_world_deploy_prod.build_name}"
       }
     }
   }

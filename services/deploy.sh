@@ -18,7 +18,7 @@ cat <<HERE > "$TASK_DEFINITION_FILE"
     "containerDefinitions": [
         {
             "name": "${SERVICE}-${ENVIRONMENT}",
-            "image": "${AWS_ACCOUNT}.dkr.ecr.eu-west-1.amazonaws.com/${SERVICE}:${VERSION}",
+            "image": "${AWS_ACCOUNT}.dkr.ecr.eu-west-1.amazonaws.com/${SERVICE}:${CODEBUILD_RESOLVED_SOURCE_VERSION}",
             "cpu": 1,
             "memory": 512,
             "portMappings": [

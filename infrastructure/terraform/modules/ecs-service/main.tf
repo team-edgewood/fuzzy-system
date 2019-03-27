@@ -241,13 +241,13 @@ resource "aws_acm_certificate_validation" "cert" {
 
 resource "aws_codedeploy_app" "app" {
   compute_platform = "ECS"
-  name             = "${var.service_name}"
+  name             = "${var.service_name}-${var.environment}"
 }
 
 resource "aws_codedeploy_deployment_group" "dg" {
   app_name               = "${aws_codedeploy_app.app.name}"
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
-  deployment_group_name  = "${var.service_name}-dg"
+  deployment_group_name  = "${var.service_name}-${var.environment}-dg"
   service_role_arn       = "${aws_iam_role.code_deploy_role.arn}"
 
   auto_rollback_configuration {
@@ -295,7 +295,7 @@ resource "aws_codedeploy_deployment_group" "dg" {
 }
 
 resource "aws_iam_role" "code_deploy_role" {
-  name = "code-deploy-role"
+  name = "${var.service_name}-${var.environment}-deploy"
 
   assume_role_policy = <<EOF
 {

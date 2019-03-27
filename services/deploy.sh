@@ -10,7 +10,7 @@ SECURITY_GROUPS=$(aws ec2 describe-security-groups --filters Name=tag:name,Value
 ECS_ROLE=$(aws iam get-role --role-name ecs-role-application-cluster-${ENVIRONMENT} --query 'Role.Arn')
 TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${SERVICE} --query 'taskDefinition.taskDefinitionArn')
 
-pip install --upgrade awscli
+pip install --upgrade awscli || sudo pip install --upgrade awscli
 
 cat <<HERE > "$TASK_DEFINITION_FILE"
 {
@@ -62,5 +62,5 @@ aws ecs deploy \
   --task-definition ${TASK_DEFINITION_FILE} \
   --codedeploy-appspec ${CODEDEPLOY_APPSPEC} \
   --cluster application-cluster-${ENVIRONMENT} \
-  --codedeploy-application ${SERVICE} \
-  --codedeploy-deployment-group ${SERVICE}-dg
+  --codedeploy-application ${SERVICE}-${ENVIRONMENT} \
+  --codedeploy-deployment-group ${SERVICE}-${ENVIRONMENT}-dg

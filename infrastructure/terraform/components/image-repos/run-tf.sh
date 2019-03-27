@@ -5,8 +5,8 @@ set -eux
 cd $(dirname $0)
 
 which terraform || {
-  wget https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip
-  unzip terraform_0.11.11_linux_amd64.zip
+  wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
+  unzip terraform_0.11.13_linux_amd64.zip
   mv terraform /usr/local/bin
 }
 
